@@ -1,0 +1,14 @@
+**Authentication** 
+-> Register
+-> Login
+-> Logout
+
+**Post**
+-> create post
+-> insta feed
+-> like post
+-> save posts
+
+**Users**
+-> Followers
+-> Following
