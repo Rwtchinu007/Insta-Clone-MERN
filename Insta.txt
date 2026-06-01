@@ -4,6 +4,12 @@
 -> Logout
 
 **Post**
+{
+    caption:String,
+    img_url:String,
+    user:userId,
+    createdAt:Date-time
+}
 -> create post
 -> insta feed
 -> like post
