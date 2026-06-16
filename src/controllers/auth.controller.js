@@ -31,7 +31,7 @@ async function registerController(req, res) {
     });
   }
   // const hash = crypto.createHash("sha256").update(password).digest("hex");
-  const hash = await bcrypt.hash(password,10);//salt means how many layers of hashing.
+  const hash = await bcrypt.hash(password, 10); //salt means how many layers of hashing.
   const user = await userModel.create({
     username,
     email,
@@ -44,6 +44,7 @@ async function registerController(req, res) {
   const token = await jwt.sign(
     {
       id: user._id,
+      username: user.username,
     },
     process.env.JWT_SECRET,
     { expiresIn: "1d" },
@@ -85,8 +86,8 @@ async function loginController(req, res) {
     });
   }
   // const hash = crypto.createHash("sha256").update(password).digest("hex");
-  
-  const isPasswordValid = await bcrypt.compare(password,user.password);
+
+  const isPasswordValid = await bcrypt.compare(password, user.password);
   if (!isPasswordValid) {
     res.status(401).json({
       message: "Invalid password",
@@ -95,6 +96,7 @@ async function loginController(req, res) {
   const token = jwt.sign(
     {
       id: user._id,
+      username: user.username,
     },
     process.env.JWT_SECRET,
     { expiresIn: "1d" },
@@ -112,8 +114,7 @@ async function loginController(req, res) {
   });
 }
 
-
 module.exports = {
-    registerController,
-    loginController
-}
+  registerController,
+  loginController,
+};
