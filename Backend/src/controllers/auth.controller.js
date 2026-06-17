@@ -50,7 +50,12 @@ async function registerController(req, res) {
     { expiresIn: "1d" },
   );
 
-  res.cookie("token", token);
+  res.cookie("token", token, {
+    // httpOnly: true,
+    // sameSite: "lax",
+    // secure: false,
+    // maxAge: 24 * 60 * 60 * 1000,
+  });
   res.status(201).json({
     message: "User registered successfully",
     user: {
@@ -102,9 +107,28 @@ async function loginController(req, res) {
     { expiresIn: "1d" },
   );
 
-  res.cookie("token", token);
+  res.cookie("token", token, {
+    // httpOnly: true,
+    // sameSite: "lax",
+    // secure: false,
+    // maxAge: 24 * 60 * 60 * 1000,
+  });
   res.status(200).json({
     message: "User logged in successfully",
+    user: {
+      username: user.username,
+      email: user.email,
+      bio: user.bio,
+      profileImage: user.profileImage,
+    },
+  });
+}
+
+async function getMeController(req, res) {
+  const userId = req.user.id;
+  const user = await userModel.findById(userId);
+
+  res.status(200).json({
     user: {
       username: user.username,
       email: user.email,
@@ -117,4 +141,5 @@ async function loginController(req, res) {
 module.exports = {
   registerController,
   loginController,
+  getMeController,
 };
