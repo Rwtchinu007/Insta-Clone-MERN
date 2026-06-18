@@ -11,10 +11,12 @@ const Register = () => {
 
   async function handleFormSubmit(e) {
     e.preventDefault();
-
-    handleRegister(username, email, password).then((res) => {
+    try {
+      const res = await handleRegister(username, email, password);
       console.log("Registration successful", res);
-    });
+    } catch (err) {
+      console.error(err);
+    }
   }
 
   return (
@@ -46,12 +48,14 @@ const Register = () => {
             name="password"
             placeholder="Enter password"
           />
-          <button>Register</button>
+          <button type="submit" className="btn primary-btn">
+            Register
+          </button>
         </form>
         <p>
           Already have an account?
           <Link className="toggleAuthForm" to="/login">
-            Login
+            Login to Account
           </Link>
         </p>
       </div>

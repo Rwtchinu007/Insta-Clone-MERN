@@ -1,0 +1,19 @@
+.btn{
+    border: none;
+    outline: none;
+    padding-inline: 1.5rem;
+    padding-block: 1rem;
+    border-radius: 1rem;
+    background-color: #d76262;
+    color: whitesmoke;
+    cursor: pointer;
+    transition: all 0.2s ease-in-out;
+
+    &.primary-btn{
+        background-color: #b42121;
+        color: whitesmoke;
+    }
+    &:active, &:hover{
+       transform: scale(0.98);
+    }   
+}
