@@ -1,22 +1,29 @@
 import { useState } from "react";
 import "../styles/form.scss";
-import { Link } from "react-router";
+import { Link,useNavigate } from "react-router";
 import { useAuth } from "../hooks/useAuth";
 
 const Register = () => {
+  const {loading,handleRegister} = useAuth();
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const { handleRegister } = useAuth();
+  const [password, setPassword] = useState(""); 
+
+  const navigate = useNavigate();
 
   async function handleFormSubmit(e) {
     e.preventDefault();
     try {
       const res = await handleRegister(username, email, password);
-      console.log("Registration successful", res);
+      // console.log("Registration successful", res);
+      navigate("/");
     } catch (err) {
       console.error(err);
     }
+  }
+
+  if (loading) {
+    return <div>Loading...</div>;
   }
 
   return (
@@ -25,7 +32,7 @@ const Register = () => {
         <h1>Register</h1>
         <form onSubmit={handleFormSubmit}>
           <input
-            onInput={(e) => {
+            onChange={(e) => {
               setUsername(e.target.value);
             }}
             type="text"
@@ -33,7 +40,7 @@ const Register = () => {
             placeholder="Enter username"
           />
           <input
-            onInput={(e) => {
+            onChange={(e) => {
               setEmail(e.target.value);
             }}
             type="email"
@@ -41,7 +48,7 @@ const Register = () => {
             placeholder="Enter email"
           />
           <input
-            onInput={(e) => {
+            onChange={(e) => {
               setPassword(e.target.value);
             }}
             type="password"

@@ -72,18 +72,42 @@ async function likePostController(req, res) {
       message: "Post not found",
     });
   }
-  const like  = await likeModel.create({
-    post:postId,
-    user:username
-  })
+  const like = await likeModel.create({
+    post: postId,
+    user: username,
+  });
   res.status(200).json({
-    mesage:"Post like successfully",like
-  })
+    mesage: "Post like successfully",
+    like,
+  });
+}
+
+async function getFeedController(req, res) {
+  const user = req.user;
+  const posts = await Promise.all(
+    (await postModel.find().populate("user").lean()).map(async (post) => {
+      const isLiked = await likeModel.findOne({
+        user: user.username,
+        post: post._id, 
+      });
+
+      post.isLiked = Boolean(isLiked);
+      return post;
+    }),
+  );
+  // lean is used to get the plain javascript object instead of mongoose document. This is done to add the isLiked property to the post object before sending it to the client.
+  // await promise.all is used to wait for all the posts to be fetched from the database before sending the response to the client.
+  // populate is used to get the user details from the user model using the user id stored in the post model.
+  res.status(200).json({
+    message: "Feed fetched successfully",
+    posts,
+  });
 }
 
 module.exports = {
   createPostController,
   getPostController,
   getPostDetailsController,
-  likePostController
+  likePostController,
+  getFeedController,
 };

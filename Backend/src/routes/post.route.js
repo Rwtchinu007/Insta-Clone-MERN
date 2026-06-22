@@ -44,5 +44,13 @@ postRouter.get(
 postRouter.post("/like/:postId",identifyUser,postController.likePostController);
 
 
+/**
+ * @route GET /api/posts/feed
+ * @description get all the post created in the database by all the users. This is the feed of the user.
+ * @access private
+ */
+postRouter.get("/feed",identifyUser,postController.getFeedController);
+ 
+
 
 module.exports = postRouter;

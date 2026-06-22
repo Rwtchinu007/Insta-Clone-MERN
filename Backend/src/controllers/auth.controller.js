@@ -84,7 +84,7 @@ async function loginController(req, res) {
         email: email,
       },
     ],
-  });
+  }).select("+password"); // we need to select password field explicitly as we have set select: false in user model for password field.
   if (!user) {
     return res.status(404).json({
       message: "User not found",
