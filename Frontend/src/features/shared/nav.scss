@@ -1,7 +1,13 @@
-.nav-bar{
-   display: flex;
-    justify-content: space-between;
-    width: 100%;
-    padding-inline: 1rem;
-    padding-block: 0.5rem;
+.nav-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  padding-inline: 1rem;
+  padding-block: 0.5rem;
+}
+
+.nav-actions {
+  display: flex;
+  gap: 0.75rem;
 }

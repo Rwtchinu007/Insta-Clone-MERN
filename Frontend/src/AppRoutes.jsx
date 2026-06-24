@@ -3,6 +3,7 @@ import Login from "./features/auth/pages/Login.jsx";
 import Register from "./features/auth/pages/Register.jsx";
 import Feed from "./features/post/pages/Feed.jsx";
 import CreatePost from "./features/post/pages/CreatePost.jsx";
+import ProfilePosts from "./features/post/pages/ProfilePosts.jsx";
 
 export const router = createBrowserRouter([
   {
@@ -20,5 +21,9 @@ export const router = createBrowserRouter([
   {
     path:"/create-post",
     element:<CreatePost/>
+  },
+  {
+    path:"/profile",
+    element:<ProfilePosts/>
   }
 ]);
