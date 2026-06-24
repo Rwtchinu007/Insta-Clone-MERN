@@ -64,64 +64,77 @@ async function getPostDetailsController(req, res) {
 }
 
 async function likePostController(req, res) {
-  const username = req.user.username;
-  const postId = req.params.postId;
-  const post = await postModel.findById(postId);
-  if (!post) {
-    return res.status(404).json({
-      message: "Post not found",
+  try {
+    const username = req.user.username;
+    const postId = req.params.postId;
+    
+    const post = await postModel.findById(postId);
+    if (!post) {
+      return res.status(404).json({ message: "Post not found" });
+    }
+
+    // Check if already liked to prevent server crash
+    const existingLike = await likeModel.findOne({ post: postId, user: username });
+    if (existingLike) {
+        return res.status(400).json({ message: "Already liked" });
+    }
+
+    const like = await likeModel.create({
+      post: postId,
+      user: username,
     });
+    
+    res.status(200).json({ message: "Post liked successfully", like });
+  } catch (err) {
+    res.status(500).json({ message: "Internal server error" });
   }
-  const like = await likeModel.create({
-    post: postId,
-    user: username,
-  });
-  res.status(200).json({
-    mesage: "Post like successfully",
-    like,
-  });
 }
 
 async function unlikePostController(req, res) {
-  const username = req.user.username;
-  const postId = req.params.postId;
-  const isLiked = await likeModel.findOne({
-    user: username,
-    post: postId,
-});
- if (!isLiked) {
-    return res.status(404).json({
-      message: "Post not liked yet",
+  try {
+    const username = req.user.username;
+    const postId = req.params.postId;
+    
+    const isLiked = await likeModel.findOne({
+      user: username,
+      post: postId,
     });
+    
+    if (!isLiked) {
+      return res.status(404).json({ message: "Post not liked yet" });
+    }
+
+    await likeModel.findByIdAndDelete(isLiked._id);
+    res.status(200).json({ message: "Post unliked successfully" });
+  } catch (err) {
+    res.status(500).json({ message: "Internal server error" });
   }
-
-  await likeModel.findByIdAndDelete(isLiked._id);
-  res.status(200).json({
-    message: "Post unliked successfully",
-  });
-
 }
 
 async function getFeedController(req, res) {
-  const user = req.user;
-  const posts = await Promise.all(
-    (await postModel.find().populate("user").sort({_id:-1}). lean()).map(async (post) => {
-      const isLiked = await likeModel.findOne({
-        user: user.username,
-        post: post._id, 
-      });
+  try {
+    const user = req.user;
+    const posts = await Promise.all(
+      (await postModel.find().populate("user").sort({_id:-1}).lean()).map(async (post) => {
+        // Check if current user liked it
+        const isLiked = await likeModel.findOne({
+          user: user.username,
+          post: post._id, 
+        });
+        
+        // Get total likes count for this post
+        const totalLikes = await likeModel.countDocuments({ post: post._id });
 
-      post.isLiked = Boolean(isLiked);
-      return post;
-    }),
-  );
-  // lean is used to get the plain javascript object instead of mongoose document. This is done to add the isLiked property to the post object before sending it to the client.
-  // await promise.all is used to wait for all the posts to be fetched from the database before sending the response to the client.
-  // populate is used to get the user details from the user model using the user id stored in the post model.
-  res.status(200).json({
-    message: "Feed fetched successfully",
-    posts,
-  });
+        post.isLiked = Boolean(isLiked);
+        post.likes = new Array(totalLikes); // Mock array so post.likes.length works in frontend
+        return post;
+      })
+    );
+
+    res.status(200).json({ message: "Feed fetched successfully", posts });
+  } catch (err) {
+    res.status(500).json({ message: "Internal server error" });
+  }
 }
 
 module.exports = {

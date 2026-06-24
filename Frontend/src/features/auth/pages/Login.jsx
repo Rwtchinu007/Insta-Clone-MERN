@@ -6,7 +6,7 @@ import { useAuth } from "../hooks/useAuth";
 const Login = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  const { handleLogin, loading } = useAuth();
+  const { user, handleLogin, loading } = useAuth();
   const navigate = useNavigate();
 
   if (loading) {
@@ -27,7 +27,10 @@ const Login = () => {
   return (
     <main>
       <div className="form-container">
-        <h1>Login</h1>
+        <div className="logo-section">
+  <h1>Instagram</h1>
+  <p>Sign in to continue</p>
+</div>
         <form onSubmit={handleFormSubmit}>
           <input
             onInput={(e) => {

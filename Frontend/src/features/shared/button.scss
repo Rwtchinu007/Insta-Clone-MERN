@@ -1,19 +1,93 @@
-.btn{
-    border: none;
-    outline: none;
-    padding-inline: 1.5rem;
-    padding-block: 1rem;
-    border-radius: 1rem;
-    background-color: #d76262;
-    color: whitesmoke;
-    cursor: pointer;
-    transition: all 0.2s ease-in-out;
+// ─── Tokens ──────────────────────────────────────────────────────
+$ig-gradient: linear-gradient(135deg, #f09433 0%, #dc2743 50%, #bc1888 100%);
+$red-glow:    rgba(220, 39, 67, 0.25);
 
-    &.primary-btn{
-        background-color: #b42121;
-        color: whitesmoke;
-    }
-    &:active, &:hover{
-       transform: scale(0.98);
-    }   
+// ─── Base ────────────────────────────────────────────────────────
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+
+  border: none;
+  outline: none;
+  cursor: pointer;
+
+  width: 100%;
+  padding: 0.75rem 1rem;
+  border-radius: 10px;
+
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  white-space: nowrap;
+  font-family: inherit;
+
+  transition: opacity 0.15s ease, transform 0.1s ease, box-shadow 0.15s ease;
+}
+
+// ─── Primary ─────────────────────────────────────────────────────
+.primary-btn {
+  background: $ig-gradient;
+  color: #ffffff;
+
+  &:hover:not(:disabled) {
+    opacity: 0.88;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 16px $red-glow;
+  }
+
+  &:active:not(:disabled) {
+    transform: scale(0.97);
+    box-shadow: none;
+  }
+
+  &:disabled {
+    opacity: 0.35;
+    cursor: not-allowed;
+  }
+}
+
+// ─── Ghost ───────────────────────────────────────────────────────
+.ghost-btn {
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: #f0f0f0;
+
+  &:hover:not(:disabled) {
+    background: rgba(255, 255, 255, 0.06);
+    border-color: rgba(255, 255, 255, 0.18);
+    transform: translateY(-1px);
+  }
+
+  &:active:not(:disabled) {
+    transform: scale(0.97);
+  }
+
+  &:disabled {
+    opacity: 0.35;
+    cursor: not-allowed;
+  }
+}
+
+// ─── Danger ──────────────────────────────────────────────────────
+.danger-btn {
+  background: rgba(237, 73, 86, 0.1);
+  border: 1px solid rgba(237, 73, 86, 0.2);
+  color: #ed4956;
+
+  &:hover:not(:disabled) {
+    background: rgba(237, 73, 86, 0.18);
+    border-color: rgba(237, 73, 86, 0.35);
+    transform: translateY(-1px);
+  }
+
+  &:active:not(:disabled) {
+    transform: scale(0.97);
+  }
+
+  &:disabled {
+    opacity: 0.35;
+    cursor: not-allowed;
+  }
 }

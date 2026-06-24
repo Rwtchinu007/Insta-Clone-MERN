@@ -1,39 +1,83 @@
-import { getFeed, createPost,likePost,unlikePost } from "../services/post.api.js";
-import { useContext,useEffect,useCallback } from "react";
+import { getFeed, createPost, likePost, unlikePost } from "../services/post.api.js";
+import { useContext } from "react";
 import { postContext } from "../post.context.jsx";
 
 export const usePost = () => {
   const context = useContext(postContext);
-  const { loading, setLoading, post, feed, setFeed } = context;
+  const { loading, setLoading, post, setPost, feed, setFeed } = context;
 
-  const handleGetFeed = useCallback(async () => {
+  const handleGetFeed = async () => {
     setLoading(true);
-    const data = await getFeed();
-    setFeed(data.posts);
-    setLoading(false);
-  }, [setLoading, setFeed]);
+    try {
+      const data = await getFeed();
+      setFeed(data.posts);
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const handleCreatePost = async (imageFile, caption) => {
     setLoading(true);
-    const data = await createPost(imageFile, caption);
-    setFeed([data.post, ...feed]);
-    setLoading(false);
+    try {
+      const data = await createPost(imageFile, caption);
+      setFeed([data.post, ...(feed || [])]);
+    } catch (err) {
+      throw err;
+    } finally {
+      setLoading(false);
+    }
   };
 
-  const handleLikePost = async (post) => {
-    await likePost(post);
-    await handleGetFeed(); // Fetch the updated feed after liking a post
+ const handleLikePost = async (postId) => {
+    // Optimistic Update: Instantly turn the heart red AND increase the like count by 1
+    setFeed((prevFeed) =>
+      prevFeed.map((p) =>
+        p._id === postId 
+          ? { ...p, isLiked: true, likes: [...(p.likes || []), "mock_like"] } 
+          : p
+      )
+    );
+
+    try {
+      await likePost(postId);
+    } catch (error) {
+      // Revert if the server fails
+      setFeed((prevFeed) =>
+        prevFeed.map((p) =>
+          p._id === postId 
+            ? { ...p, isLiked: false, likes: (p.likes || []).slice(0, -1) } 
+            : p
+        )
+      );
+    }
   };
 
-  const handleUnlikePost = async (post) => {
-    await unlikePost(post);
-    await handleGetFeed(); // Fetch the updated feed after unliking a post
-  };
+  const handleUnlikePost = async (postId) => {
+    // Optimistic Update: Instantly remove the red heart AND decrease the like count by 1
+    setFeed((prevFeed) =>
+      prevFeed.map((p) =>
+        p._id === postId 
+          ? { ...p, isLiked: false, likes: (p.likes || []).slice(0, -1) } 
+          : p
+      )
+    );
 
-  useEffect(() => {
-    handleGetFeed();
-  }, [handleGetFeed]);
-  // we are calling handleGetFeed function inside useEffect because we want to fetch the feed data when the component is mounted. And we are passing an empty array as a second argument to useEffect because we want to run this effect only once when the component is mounted.
+    try {
+      await unlikePost(postId);
+    } catch (error) {
+      // Revert if the server fails
+      setFeed((prevFeed) =>
+        prevFeed.map((p) =>
+          p._id === postId 
+            ? { ...p, isLiked: true, likes: [...(p.likes || []), "mock_like"] } 
+            : p
+        )
+      );
+    }
+  };
+  // NOTE: Removed useEffect! Feed.jsx is already handling the initial fetch.
 
   return { loading, post, feed, handleGetFeed, handleCreatePost, handleLikePost, handleUnlikePost };
 };

@@ -14,7 +14,8 @@ const Register = () => {
   async function handleFormSubmit(e) {
     e.preventDefault();
     try {
-      await handleRegister(username, email, password);
+      const res = await handleRegister(username, email, password);
+      // console.log("Registration successful", res);
       navigate("/");
     } catch (err) {
       console.error(err);
@@ -28,7 +29,10 @@ const Register = () => {
   return (
     <main>
       <div className="form-container">
-        <h1>Register</h1>
+        <div className="logo-section">
+  <h1>Instagram</h1>
+  <p>Create an account to start sharing moments</p>
+</div>
         <form onSubmit={handleFormSubmit}>
           <input
             onChange={(e) => {
