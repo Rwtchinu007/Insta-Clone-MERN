@@ -1,4 +1,3 @@
-import React from 'react'
 import "../nav.scss"
 import { useNavigate } from 'react-router'
 const Nav = () => {
@@ -6,7 +5,10 @@ const Nav = () => {
   return (
    <nav className="nav-bar">
     <p>Instagram</p>
-    <button onClick={()=>{navigate('/create-post')}} className='btn primary-b tn'>New Post</button>
+    <div className="nav-actions">
+      <button onClick={()=>{navigate('/profile')}} className='btn primary-btn'>Profile</button>
+      <button onClick={()=>{navigate('/create-post')}} className='btn primary-btn'>New Post</button>
+    </div>
    </nav>
   )
 }

@@ -6,7 +6,7 @@ import { useAuth } from "../hooks/useAuth";
 const Login = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  const { user, handleLogin, loading } = useAuth();
+  const { handleLogin, loading } = useAuth();
   const navigate = useNavigate();
 
   if (loading) {
