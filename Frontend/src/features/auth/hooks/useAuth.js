@@ -1,6 +1,6 @@
-import { useContext, useEffect } from "react";
+import { useContext } from "react";
 import { AuthContext } from "../auth.context.jsx";
-import { loginUser, registerUser, getMe } from "../services/auth.api.js";
+import { loginUser, registerUser } from "../services/auth.api.js";
 
 // Centralized auth hook: performs API calls and updates context state.
 export function useAuth() {

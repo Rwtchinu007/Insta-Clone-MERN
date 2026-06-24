@@ -14,8 +14,7 @@ const Register = () => {
   async function handleFormSubmit(e) {
     e.preventDefault();
     try {
-      const res = await handleRegister(username, email, password);
-      // console.log("Registration successful", res);
+      await handleRegister(username, email, password);
       navigate("/");
     } catch (err) {
       console.error(err);
