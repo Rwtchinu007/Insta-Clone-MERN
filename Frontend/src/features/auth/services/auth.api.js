@@ -1,8 +1,8 @@
 import axios from "axios";
-// we create baseURL for axios to avoid repeating the same URL in every request
+
 const api = axios.create({
-  baseURL: "http://localhost:3000/api/auth",
-  withCredentials: true, // Include cookies in requests
+  baseURL: "/api/auth", // Relative path
+  withCredentials: true,
 });
 
 export async function registerUser(username, email, password) {
@@ -17,6 +17,7 @@ export async function registerUser(username, email, password) {
     throw err;
   }
 }
+
 export async function loginUser(username, password) {
   try {
     const response = await api.post("/login", {
